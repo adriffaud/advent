@@ -8,12 +8,12 @@ test_input =
   forward 2
   """
   |> String.split(~r{\n}, trim: true)
-  |> Enum.map(fn l -> String.split(l, " ") end)
+  |> Enum.map(&String.split(&1, " "))
 
 input =
   File.read!("./inputs/day2.txt")
   |> String.split(~r{\n}, trim: true)
-  |> Enum.map(fn l -> String.split(l, " ") end)
+  |> Enum.map(&String.split(&1, " "))
 
 part1 =
   Enum.reduce(input, %{horizontal: 0, depth: 0}, fn
