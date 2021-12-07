@@ -12,6 +12,8 @@ defmodule Day5 do
   5,5 -> 8,2
   """
 
+  @input File.read!("./inputs/day5.txt")
+
   defp parse(input) do
     input
     |> String.split(~r{\n}, trim: true)
@@ -36,15 +38,16 @@ defmodule Day5 do
       y1 == y2 ->
         Enum.map(x1..x2, &[&1, y1])
 
-        # Diagonal
+      # Diagonal
+      abs(x1 - x2) == abs(y1 - y2) ->
+        Enum.zip(x1..x2, y1..y2)
+        |> Enum.map(&Tuple.to_list(&1))
     end
   end
 
   def part1 do
-    input = File.read!("./inputs/day5.txt")
-
     count =
-      input
+      @input
       |> parse()
       |> Enum.filter(fn [[x1, y1], [x2, y2]] -> x1 == x2 or y1 == y2 end)
       |> Enum.map(&expand(&1))
@@ -57,6 +60,19 @@ defmodule Day5 do
     IO.puts("Part 1: #{count}")
   end
 
+  def part2 do
+    count =
+      @input
+      |> parse()
+      |> Enum.map(&expand(&1))
+      |> Enum.concat()
+      |> Enum.frequencies()
+      |> Map.values()
+      |> Enum.filter(&(&1 > 1))
+      |> Enum.count()
+
+    IO.inspect(count)
+  end
 end
 
-Day5.part1()
+Day5.part2()
