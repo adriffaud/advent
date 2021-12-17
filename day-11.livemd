@@ -1,0 +1,99 @@
+# Day 11
+
+## Setup
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.4.1"}
+])
+```
+
+```elixir
+input = Kino.Input.textarea("Please paste your input:")
+```
+
+```elixir
+lines =
+  input
+  |> Kino.Input.read()
+  |> String.split("\n", trim: true)
+
+grid =
+  for {line, row} <- Enum.with_index(lines),
+      {energy, col} <- Enum.with_index(String.to_charlist(line)),
+      into: %{},
+      do: {{row, col}, energy - ?0}
+
+defmodule Recursion do
+  def step(grid) do
+    flash(Map.keys(grid), grid, MapSet.new())
+  end
+
+  defp flash([{row, col} = key | keys], grid, flashed) do
+    value = grid[key]
+
+    cond do
+      is_nil(value) or key in flashed ->
+        flash(keys, grid, flashed)
+
+      grid[key] >= 9 ->
+        keys = [
+          {row - 1, col - 1},
+          {row - 1, col},
+          {row - 1, col + 1},
+          {row, col - 1},
+          {row, col + 1},
+          {row + 1, col - 1},
+          {row + 1, col},
+          {row + 1, col + 1}
+          | keys
+        ]
+
+        flash(keys, Map.put(grid, key, 0), MapSet.put(flashed, key))
+
+      true ->
+        flash(keys, Map.put(grid, key, value + 1), flashed)
+    end
+  end
+
+  defp flash([], grid, flashed) do
+    {grid, MapSet.size(flashed)}
+  end
+
+  def inspect({grid, flashes}) do
+    for row <- 0..9 do
+      IO.puts(for(col <- 0..9, do: grid[{row, col}] + ?0))
+    end
+
+    IO.puts("flashes: #{flashes}")
+  end
+end
+```
+
+## Part 1
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+1..100
+|> Enum.map_reduce(grid, fn _, grid ->
+  {grid, flashes} = Recursion.step(grid)
+  {flashes, grid}
+end)
+|> elem(0)
+|> Enum.sum()
+```
+
+## Part 2
+
+<!-- livebook:{"reevaluate_automatically":true} -->
+
+```elixir
+Stream.iterate(1, &(&1 + 1))
+|> Enum.reduce_while(grid, fn i, grid ->
+  case Recursion.step(grid) do
+    {grid, flashes} when map_size(grid) == flashes -> {:halt, i}
+    {grid, _flashes} -> {:cont, grid}
+  end
+end)
+```
