@@ -1,5 +1,3 @@
-# Advent 2021
+# Advent of code
 
-Learning Elixir for Advent of Code 2021
-
-First days where my own solutions, then followed along https://github.com/josevalim/ Twitch streams to better understand both puzzles and Elixir 😀
+This repository contains my solution code for [advent of code](https://adventofcode.com/).
