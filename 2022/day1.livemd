@@ -1,0 +1,113 @@
+<!- vim: syntax=markdown -->
+
+# Advent of Code day 1
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.7.0"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+Resolving Hex dependencies...
+Dependency resolution completed:
+New:
+  kino 0.7.0
+  table 0.1.2
+* Getting kino (Hex package)
+* Getting table (Hex package)
+==> table
+Compiling 5 files (.ex)
+Generated table app
+==> kino
+Compiling 36 files (.ex)
+Generated kino app
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Puzzle input
+
+```elixir
+example = "1000
+2000
+3000
+
+4000
+
+5000
+6000
+
+7000
+8000
+9000
+
+10000"
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000"
+```
+
+```elixir
+input = Kino.Input.textarea("Part 1 input")
+```
+
+```elixir
+parsed =
+  input
+  |> Kino.Input.read()
+  |> String.split("\n\n")
+  |> Enum.map(&String.split/1)
+  |> Enum.map(fn elf ->
+    Enum.map(elf, fn calories ->
+      {val, _} = Integer.parse(calories)
+      val
+    end)
+  end)
+  |> Enum.map(&Enum.sum/1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[51197, 50944, 36865, 53242, 49887, 52992, 50847, 46737, 46709, 41925, 52219, 50016, 44377, 31737,
+ 41774, 46410, 64779, 42699, 39869, 64738, 55463, 38410, 50466, 51958, 39448, 45561, 41743, 58502,
+ 47473, 54387, 62621, 57815, 48902, 60743, 42664, 42824, 48695, 65339, 51250, 51652, 47896, 50950,
+ 55050, 62730, 52802, 46943, 57599, 32159, 46250, 35494, ...]
+```
+
+## Part 1
+
+```elixir
+Enum.max(parsed)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+67450
+```
+
+## Part 2
+
+```elixir
+parsed
+|> Enum.sort(:desc)
+|> Enum.take(3)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+199357
+```
