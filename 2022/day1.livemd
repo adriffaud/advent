@@ -1,4 +1,4 @@
-<!- vim: syntax=markdown -->
+<!-- vim: syntax=markdown -->
 
 # Advent of Code day 1
 
