@@ -1,0 +1,133 @@
+<!-- vim: syntax=markdown -->
+
+# Advent of Code day 3
+
+```elixir
+Mix.install([
+  {:kino, "~> 0.7.0"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Puzzle input
+
+```elixir
+example = "vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw"
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"vJrwpWtwJgWrhcsFMMfFFhFp\njqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL\nPmmdzqPrVvPwwTWBwg\nwMqvLMZHhHMvwLHjbvcjnnSBnvTQFn\nttgJtRGJQctTZtZT\nCrZsJsPPZsGzwwsLwLmpwMDw"
+```
+
+```elixir
+input = Kino.Input.textarea("Puzzle input")
+```
+
+```elixir
+parsed =
+  input
+  |> Kino.Input.read()
+  # example
+  |> String.split("\n")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+["hqBqJsqHhHvhHHqlBvlfpHQQwLVzVwtVzjzttjQVSjMjwL", "gRTRnCRsFNGbTzLjwcSTMmSz",
+ "dGgsRWPGdWgZJqBBqhfpPq", "HNCNJHCWJRRLqNJWlfrrrwsmlwGmmf", "dddvLdLjdDvjvswlmGwlZQtjrt",
+ "dvcpbLVcvNJJHNPHSp", "QDprSpLQRLQrQDmQcQFZjbbhZwdRsRFbbBss",
+ "gWGGPgNvJlgJzDlNGHCGPNZZgFBbsjbFFBwZwfhdZbZB", "lHTlGMHlGCPNvClzGzJHvGcrMcVtLqMLcrrQVcVDrqrm",
+ "SrBpJFfldlFNslFJBZwsmwgVGGsCCVmZZD", "jLtjvzLQMtWjbbQvDZZwGRJGgwggGZgv",
+ "MzqqjznQPqnnjznnctnFlSddPfHflhfBJFNdHd", "mPNNGVCRngnSbgNw",
+ "WqsqlTssgvqvZWZzhsTzWhScdHtfJJnfbtSJwfczdtSS", "sqTvhpqQvWZQLmDpDGMDGrgL",
+ "DQRcLQVLbbcbrFPcRtTBBBJnTZrrnmZTrMgJ", "slGjjjdlhMfvdMQTvg", "jlzNhWHhhWjHlwwwGLDSDtPQVtRzRbSzpp",
+ "DzDgfvzfDczfHCHSlgHLCmWG", "PrpNPJtpPMBssmmVdmSVVr", "PSRMwPnMpBNtNBTnnZwDqzQFfwhjZZqfhh",
+ "fzfBwhBJFbCwbwwg", "strtgtrPgmPgFRsMdRnZRMFn", "mrmLPDvGmmtSLDgmSqvHchhcHQzcQQJHBfBh",
+ "NsgwPPDgsPHqsTqqmLbLrDRhmrRVrbVW", "lFpGFtfFlvSFplGFzptSGSSlhZbhjhfrmWbhLhmLbCZVZjWr",
+ "ccplJQSGcSSpVFvNqqsqPNqPQPTwqd", "HFhPNNZGqSZrCDBVZBCB", "RJTtwczTzCRVQrRHpR",
+ "mfgblfltwgwwmlJgcHNnGhSbFNnFsFjFqG", "tSRqNRHpHnMSTqpcmrWWfqfmrCQCrW",
+ "lhGDtbgVVgDsDbhfldfwrzrfcdzwcr", "vtDDhsgFBTNZFBHS", "LcNpLLBNgdmHGmsBCrRBQDDwnwRj",
+ "hSWfZVhfPJJhfVWbhzbnQqQnRRRqPvCCrjvjwj", "ztJSSJhzzSTJrZSbzzJTfzbZmLmggdmNMFNpmtmMGFFGNpmt",
+ "TRdFfLbTnLvZVlZvznQV", "pgJGprJNhghhNjjPgPNrhNqqlVVlQVVQqQjfzBfQvZzB",
+ "rmGmSwJPwJprrNDbsfMRsdTDcDWHfM", "QMpZZTtwMBttJMMbVqPpqLqbVlbqqN",
+ "rjCFGrdGRwdDHSnqflPVLqqVNllrfl", "DHGDRvhvwTZhJWBQ", "LcQCCpLQVhrdcFQCJrmmmwDwvDtJJnnw",
+ "TsZqqTzMRqZjfsjTTDjsNJnmnStRSHnnSJmnJSNH", "sMMZZbDjZFdbVCFphV", "FCcdFFGBsdDrbMNSmSdmQR",
+ "tVttHVLhvVgfTTtffNSMQRMZSRmMQNmHSb", "gngvvwJtVVTvVvvvfwvJThhCzGcnsCjmCDmscPcGCsGsmz",
+ "fsnzRNZswZszPRZSLflPpDhlhvgWHmjWvJjh", "bVcCqjbdjbcMdBrddrQphvHHmHWlggpWpppqJJ", ...]
+```
+
+## Part 1
+
+```elixir
+parsed
+|> Enum.map(fn bag ->
+  String.split_at(bag, bag |> String.length() |> div(2))
+end)
+|> Enum.map(fn {left, right} ->
+  String.myers_difference(left, right) |> Keyword.fetch!(:eq)
+end)
+|> Enum.map(&String.first/1)
+|> Enum.join()
+|> String.to_charlist()
+|> Enum.map(fn char ->
+  cond do
+    char < 97 -> Integer.mod(char, 65) + 27
+    char >= 97 -> Integer.mod(char, 97) + 1
+  end
+end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+7674
+```
+
+## Part 2
+
+```elixir
+parsed
+|> Enum.chunk_every(3)
+|> Enum.map(fn group ->
+  [bag1, bag2, bag3] =
+    Enum.map(group, fn bag ->
+      bag
+      |> String.graphemes()
+      |> Enum.sort()
+      |> Enum.dedup()
+      |> Enum.join()
+      |> String.to_charlist()
+    end)
+
+  MapSet.intersection(MapSet.new(bag1), MapSet.new(bag2))
+  |> MapSet.intersection(MapSet.new(bag3))
+  |> MapSet.to_list()
+  |> Enum.reduce(0, fn char, acc ->
+    cond do
+      char < 97 -> acc + Integer.mod(char, 65) + 27
+      char >= 97 -> acc + Integer.mod(char, 97) + 1
+    end
+  end)
+end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+2805
+```
